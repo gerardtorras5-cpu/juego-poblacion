@@ -7,8 +7,13 @@ const countries = [
     { name: "España", population: 48000000 },
     { name: "Francia", population: 67000000 },
     { name: "Italia", population: 59000000 },
-    { name: "Afganistán", population: 45000000 }
+    { name: "Afganistán", population: 45000000 },
+    { name: "Åland", population: 30000 },
+    { name: "Albania", population: 2700000 },
+    { name: "Alemania", population: 84000000 },
+    { name: "Andorra", population: 89000 },
 ];
+
 
 /* -----------------------------------------
    FIREBASE
