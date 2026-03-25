@@ -358,3 +358,23 @@ function showRanking() {
 
     showScreen("ranking-screen");
 }
+function updateProgressBar() {
+    let level = 1;
+    let currentLevelXP = 0;
+    let nextLevelXP = 1000;
+
+    // Calculamos en qué nivel estamos y cuánta XP pide ese nivel
+    while (xp >= nextLevelXP) {
+        currentLevelXP = nextLevelXP;
+        level++;
+        nextLevelXP += 2000 + (level * 1000);
+    }
+
+    // Calculamos el progreso dentro del nivel actual
+    const xpInThisLevel = xp - currentLevelXP;
+    const totalXPRequiredForNext = nextLevelXP - currentLevelXP;
+    const percentage = (xpInThisLevel / totalXPRequiredForNext) * 100;
+
+    // Actualizamos el ancho del div en el DOM
+    document.getElementById("progress-bar").style.width = percentage + "%";
+}
