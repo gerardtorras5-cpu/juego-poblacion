@@ -140,7 +140,7 @@ function nextCountry() {
 }
 
 /* -----------------------------------------
-   XP PROPORCIONAL (CORREGIDO)
+   XP PROPORCIONAL
 ----------------------------------------- */
 
 function calculateXP(real, answer) {
@@ -166,7 +166,7 @@ function updateLivesDisplay() {
 }
 
 /* -----------------------------------------
-   ENVIAR RESPUESTA (CORREGIDO + MILLONES)
+   ENVIAR RESPUESTA (CON PORCENTAJE + RETRASO)
 ----------------------------------------- */
 
 function submitAnswer() {
@@ -181,6 +181,11 @@ function submitAnswer() {
     // Convertir millones a unidades
     answer = answer * 1_000_000;
 
+    // Calcular error
+    const error = Math.abs(currentCountry.population - answer) / currentCountry.population;
+    const errorPercent = (error * 100).toFixed(2);
+
+    // Calcular XP
     const gained = calculateXP(currentCountry.population, answer);
     xp += gained;
 
@@ -189,12 +194,20 @@ function submitAnswer() {
     updateLevelBar();
     updateLivesDisplay();
 
+    // Mostrar resultado antes de pasar al siguiente país
     document.getElementById("round-result").textContent =
-        `Has ganado ${gained} XP`;
+        `Has fallado un ${errorPercent}% y has ganado ${gained} XP`;
 
-    if (lives <= 0) return gameOver();
+    // Si te quedas sin vidas → Game Over
+    if (lives <= 0) {
+        setTimeout(() => gameOver(), 1500);
+        return;
+    }
 
-    nextCountry();
+    // Esperar 1.5 segundos antes de cambiar de país
+    setTimeout(() => {
+        nextCountry();
+    }, 1500);
 }
 
 /* -----------------------------------------
