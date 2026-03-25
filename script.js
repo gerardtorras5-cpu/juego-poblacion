@@ -6,7 +6,8 @@
 const countries = [
     { name: "España", population: 48000000 },
     { name: "Francia", population: 67000000 },
-    { name: "Italia", population: 59000000 }
+    { name: "Italia", population: 59000000 },
+    { name: "Afganistán", population: 45000000 }
 ];
 
 /* -----------------------------------------
@@ -254,6 +255,17 @@ function restartGame() {
 ----------------------------------------- */
 
 function goToMenu() {
+    saveXP();
+    saveLocal();
+
+    // Mostrar notificación
+    const box = document.getElementById("save-notification");
+    box.style.display = "block";
+
+    setTimeout(() => {
+        box.style.display = "none";
+    }, 1000);
+
     showScreen("start-screen");
 }
 
