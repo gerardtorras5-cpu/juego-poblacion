@@ -123,3 +123,23 @@ th {
     background: linear-gradient(90deg, #4caf50, #8bc34a);
     transition: width 0.5s ease-in-out; /* Animación suave al llenarse */
 }
+
+#progress-bar {
+    background-image: linear-gradient(
+        45deg, 
+        rgba(255,255,255,.15) 25%, 
+        transparent 25%, 
+        transparent 50%, 
+        rgba(255,255,255,.15) 50%, 
+        rgba(255,255,255,.15) 75%, 
+        transparent 75%, 
+        transparent
+    );
+    background-size: 40px 40px;
+}
+#progress-bar {
+    width: 0%; 
+    height: 100%;
+    background: #4caf50; /* Un verde sólido para probar */
+    transition: width 0.5s ease; /* Esto hace que el movimiento sea fluido */
+}

@@ -139,6 +139,7 @@ function startGame() {
     updateLevelText();
     nextCountry();
     showScreen("game-screen");
+    updateProgressBar();
 }
 
 /* -----------------------------------------
@@ -309,6 +310,7 @@ function getLevel() {
 
 function updateXPDisplay() {
     document.getElementById("xp").textContent = `XP: ${xp}`;
+    updateProgressBar();
 }
 
 function updateLevelText() {
@@ -359,22 +361,29 @@ function showRanking() {
     showScreen("ranking-screen");
 }
 function updateProgressBar() {
-    let level = 1;
     let currentLevelXP = 0;
-    let nextLevelXP = 1000;
+    let nextLevelThreshold = 1000;
+    let level = 1;
 
-    // Calculamos en qué nivel estamos y cuánta XP pide ese nivel
-    while (xp >= nextLevelXP) {
-        currentLevelXP = nextLevelXP;
+    // Calculamos los umbrales del nivel actual
+    while (xp >= nextLevelThreshold) {
+        currentLevelXP = nextLevelThreshold;
         level++;
-        nextLevelXP += 2000 + (level * 1000);
+        nextLevelThreshold += 2000 + (level * 1000);
     }
 
-    // Calculamos el progreso dentro del nivel actual
     const xpInThisLevel = xp - currentLevelXP;
-    const totalXPRequiredForNext = nextLevelXP - currentLevelXP;
-    const percentage = (xpInThisLevel / totalXPRequiredForNext) * 100;
+    const totalRequiredInLevel = nextLevelThreshold - currentLevelXP;
+    
+    // Calculamos el porcentaje
+    let percentage = (xpInThisLevel / totalRequiredInLevel) * 100;
+    
+    // Limitar entre 0 y 100 por seguridad
+    percentage = Math.max(0, Math.min(100, percentage));
 
-    // Actualizamos el ancho del div en el DOM
-    document.getElementById("progress-bar").style.width = percentage + "%";
+    // Aplicar al DOM
+    const bar = document.getElementById("progress-bar");
+    if (bar) {
+        bar.style.width = percentage + "%";
+    }
 }
