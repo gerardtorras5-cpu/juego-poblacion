@@ -1,4 +1,3 @@
-
 /* -----------------------------------------
    LISTA DE PAÍSES (EDITABLE)
 ----------------------------------------- */
@@ -54,8 +53,6 @@ window.onload = () => {
         const data = JSON.parse(savedUser);
         playerName = data.name;
         xp = data.xp;
-        updateXPDisplay();
-        updateLevelBar();
         document.getElementById("logoutBtn").style.display = "block";
         startGame();
     }
@@ -143,17 +140,19 @@ function nextCountry() {
 }
 
 /* -----------------------------------------
-   XP PROPORCIONAL
+   XP PROPORCIONAL (CORREGIDO)
 ----------------------------------------- */
 
 function calculateXP(real, answer) {
     const error = Math.abs(real - answer) / real;
 
+    // Si el error es mayor al 5% → pierdes vida
     if (error > 0.05) {
         lives--;
         return 100;
     }
 
+    // XP proporcional entre 100 y 1000
     const xpGain = 100 + (900 * (1 - (error / 0.05)));
     return Math.round(xpGain);
 }
@@ -167,15 +166,23 @@ function updateLivesDisplay() {
 }
 
 /* -----------------------------------------
-   ENVIAR RESPUESTA
+   ENVIAR RESPUESTA (CORREGIDO)
 ----------------------------------------- */
 
 function submitAnswer() {
     const answer = Number(document.getElementById("populationInput").value);
-    if (!answer) return;
+
+    // Validación correcta del input
+    if (isNaN(answer) || answer <= 0) {
+        alert("Introduce un número válido");
+        return;
+    }
 
     const gained = calculateXP(currentCountry.population, answer);
     xp += gained;
+
+    // Guardar XP inmediatamente
+    saveLocal();
 
     updateXPDisplay();
     updateLevelBar();
