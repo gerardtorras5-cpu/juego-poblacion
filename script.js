@@ -12,7 +12,15 @@ const countries = [
     { name: "Albania", population: 2700000 },
     { name: "Alemania", population: 84000000 },
     { name: "Andorra", population: 89000 },
+    { name: "Angola", population: 37000000 },
+    { name: "Anguila", population: 15000 },
+    { name: "Antigua y Barbuda", population: 97000 },
+    { name: "Arabia Saudita", population: 35000000 },
+    { name: "Argelia", population: 48000000 },
+    { name: "Argentina", population: 46000000 },
+    { name: "Armenia", population: 3000000 },
 ];
+
 
 
 /* -----------------------------------------
