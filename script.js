@@ -174,7 +174,7 @@ function showLevelUp(level) {
 
     setTimeout(() => {
         box.style.display = "none";
-    }, 1000);
+    }, 2000);
 }
 
 /* -----------------------------------------
@@ -264,7 +264,7 @@ function goToMenu() {
 
     setTimeout(() => {
         box.style.display = "none";
-    }, 1000);
+    }, 2000);
 
     showScreen("start-screen");
 }
