@@ -11,9 +11,13 @@
     <!-- Pantalla de inicio -->
     <section id="start-screen" class="screen active">
         <h1>Juego de Poblaciones</h1>
+
         <input id="playerNameInput" type="text" placeholder="Tu nombre">
-        <button onclick="startGame()">Jugar</button>
+        <input id="passwordInput" type="password" placeholder="Contraseña">
+
+        <button onclick="login()">Continuar</button>
         <button onclick="showRanking()">Ranking Global</button>
+        <button onclick="logout()" id="logoutBtn" style="display:none;">Cerrar sesión</button>
     </section>
 
     <!-- Pantalla de juego -->
@@ -65,6 +69,9 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <!-- CryptoJS para cifrar contraseñas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 
     <script src="script.js"></script>
 </body>

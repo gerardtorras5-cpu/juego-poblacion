@@ -1,12 +1,12 @@
+
 /* -----------------------------------------
-   LISTA DE PAÍSES (EDITABLE POR GERARD)
+   LISTA DE PAÍSES (EDITABLE)
 ----------------------------------------- */
 
 const countries = [
     { name: "España", population: 48000000 },
     { name: "Francia", population: 67000000 },
     { name: "Italia", population: 59000000 }
-    // Añade aquí los países que quieras
 ];
 
 /* -----------------------------------------
@@ -45,23 +45,88 @@ function showScreen(id) {
 }
 
 /* -----------------------------------------
+   AUTOLOGIN
+----------------------------------------- */
+
+window.onload = () => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+        const data = JSON.parse(savedUser);
+        playerName = data.name;
+        xp = data.xp;
+        updateXPDisplay();
+        updateLevelBar();
+        document.getElementById("logoutBtn").style.display = "block";
+        startGame();
+    }
+};
+
+/* -----------------------------------------
+   LOGIN / REGISTRO
+----------------------------------------- */
+
+function login() {
+    const name = document.getElementById("playerNameInput").value.trim();
+    const pass = document.getElementById("passwordInput").value.trim();
+
+    if (!name || !pass) return alert("Introduce nombre y contraseña");
+
+    const hashed = CryptoJS.SHA256(pass).toString();
+
+    db.ref("players/" + name).once("value", snap => {
+        if (!snap.exists()) {
+            // REGISTRO
+            db.ref("players/" + name).set({
+                password: hashed,
+                xp: 0,
+                level: 1
+            });
+
+            playerName = name;
+            xp = 0;
+
+            saveLocal();
+            document.getElementById("logoutBtn").style.display = "block";
+            startGame();
+        } else {
+            // LOGIN
+            const data = snap.val();
+
+            if (data.password !== hashed) {
+                return alert("Contraseña incorrecta");
+            }
+
+            playerName = name;
+            xp = data.xp;
+
+            saveLocal();
+            document.getElementById("logoutBtn").style.display = "block";
+            startGame();
+        }
+    });
+}
+
+function saveLocal() {
+    localStorage.setItem("user", JSON.stringify({
+        name: playerName,
+        xp: xp
+    }));
+}
+
+function logout() {
+    localStorage.removeItem("user");
+    location.reload();
+}
+
+/* -----------------------------------------
    INICIO DEL JUEGO
 ----------------------------------------- */
 
 function startGame() {
-    const nameInput = document.getElementById("playerNameInput").value.trim();
-    if (nameInput === "") return alert("Introduce un nombre");
-
-    playerName = nameInput;
-
-    // Cargar XP si ya existe
-    db.ref("players/" + playerName).once("value", snap => {
-        if (snap.exists()) xp = snap.val().xp;
-        updateXPDisplay();
-        updateLevelBar();
-    });
-
     lives = 3;
+    updateLivesDisplay();
+    updateXPDisplay();
+    updateLevelBar();
     nextCountry();
     showScreen("game-screen");
 }
@@ -78,19 +143,27 @@ function nextCountry() {
 }
 
 /* -----------------------------------------
-   CALCULAR XP SEGÚN ERROR
+   XP PROPORCIONAL
 ----------------------------------------- */
 
 function calculateXP(real, answer) {
     const error = Math.abs(real - answer) / real;
 
-    if (error === 0) return 1000;
-    if (error <= 0.01) return 800;
-    if (error <= 0.03) return 500;
-    if (error <= 0.05) return 300;
+    if (error > 0.05) {
+        lives--;
+        return 100;
+    }
 
-    lives--;
-    return 100;
+    const xpGain = 100 + (900 * (1 - (error / 0.05)));
+    return Math.round(xpGain);
+}
+
+/* -----------------------------------------
+   VIDAS VISUALES
+----------------------------------------- */
+
+function updateLivesDisplay() {
+    document.getElementById("lives").textContent = "❤️".repeat(lives);
 }
 
 /* -----------------------------------------
@@ -106,6 +179,7 @@ function submitAnswer() {
 
     updateXPDisplay();
     updateLevelBar();
+    updateLivesDisplay();
 
     document.getElementById("round-result").textContent =
         `Has ganado ${gained} XP`;
@@ -124,6 +198,7 @@ function gameOver() {
     if (xp < 0) xp = 0;
 
     saveXP();
+    saveLocal();
 
     document.getElementById("final-xp").textContent = `XP total: ${xp}`;
     document.getElementById("final-level").textContent = `Nivel: ${getLevel()}`;
@@ -137,6 +212,7 @@ function gameOver() {
 
 function restartGame() {
     lives = 3;
+    updateLivesDisplay();
     nextCountry();
     showScreen("game-screen");
 }
@@ -185,7 +261,7 @@ function updateLevelBar() {
 ----------------------------------------- */
 
 function saveXP() {
-    db.ref("players/" + playerName).set({
+    db.ref("players/" + playerName).update({
         xp: xp,
         level: getLevel(),
         updated: Date.now()
