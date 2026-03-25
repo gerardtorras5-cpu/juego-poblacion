@@ -233,6 +233,15 @@ function submitAnswer() {
     setTimeout(() => {
         nextCountry();
     }, 1500);
+    const resultElement = document.getElementById("round-result");
+
+if (error <= 0.05) {
+    resultElement.style.color = "#4caf50"; // Verde si acierta
+    resultElement.textContent = `¡Excelente! Error de solo ${errorPercent}% (+${gained} XP)`;
+} else {
+    resultElement.style.color = "#f44336"; // Rojo si falla
+    resultElement.textContent = `¡Casi! Error del ${errorPercent}%. Pierdes una vida.`;
+}
 }
 
 /* -----------------------------------------
