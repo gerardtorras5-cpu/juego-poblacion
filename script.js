@@ -94,7 +94,7 @@ function login() {
             }
 
             playerName = name;
-            xp = data.xp;
+            xp = data.xp || 0;
 
             saveLocal();
             document.getElementById("logoutBtn").style.display = "block";
@@ -123,7 +123,7 @@ function startGame() {
     lives = 3;
     updateLivesDisplay();
     updateXPDisplay();
-    updateLevelBar();
+    updateLevelText();
     nextCountry();
     showScreen("game-screen");
 }
@@ -166,13 +166,12 @@ function updateLivesDisplay() {
 }
 
 /* -----------------------------------------
-   ENVIAR RESPUESTA (CON PORCENTAJE + RETRASO)
+   ENVIAR RESPUESTA (PORCENTAJE + XP + RETRASO)
 ----------------------------------------- */
 
 function submitAnswer() {
     let answer = Number(document.getElementById("populationInput").value);
 
-    // Validación correcta del input
     if (isNaN(answer) || answer <= 0) {
         alert("Introduce un número válido");
         return;
@@ -185,20 +184,30 @@ function submitAnswer() {
     const error = Math.abs(currentCountry.population - answer) / currentCountry.population;
     const errorPercent = (error * 100).toFixed(2);
 
+    // Nivel antes de sumar XP
+    const oldLevel = getLevel();
+
     // Calcular XP
     const gained = calculateXP(currentCountry.population, answer);
     xp += gained;
 
     saveLocal();
     updateXPDisplay();
-    updateLevelBar();
     updateLivesDisplay();
 
-    // Mostrar resultado antes de pasar al siguiente país
-    document.getElementById("round-result").textContent =
-        `Has fallado un ${errorPercent}% y has ganado ${gained} XP`;
+    // Comprobar si ha subido de nivel
+    const newLevel = getLevel();
+    let levelMsg = "";
+    if (newLevel > oldLevel) {
+        levelMsg = ` ¡Has subido a nivel ${newLevel}!`;
+    }
+    updateLevelText();
 
-    // Si te quedas sin vidas → Game Over
+    // Mostrar resultado
+    document.getElementById("round-result").textContent =
+        `Has fallado un ${errorPercent}% y has ganado ${gained} XP.${levelMsg}`;
+
+    // Si te quedas sin vidas → Game Over tras un pequeño retraso
     if (lives <= 0) {
         setTimeout(() => gameOver(), 1500);
         return;
@@ -247,7 +256,7 @@ function goToMenu() {
 }
 
 /* -----------------------------------------
-   XP + NIVELES
+   XP + NIVELES (SIN BARRA)
 ----------------------------------------- */
 
 function getLevel() {
@@ -266,15 +275,12 @@ function updateXPDisplay() {
     document.getElementById("xp").textContent = `XP: ${xp}`;
 }
 
-function updateLevelBar() {
+function updateLevelText() {
     const level = getLevel();
-    const prevXP = level === 1 ? 0 : 1000 + (level - 2) * 3000;
-    const nextXP = 1000 + (level - 1) * 3000;
-
-    const progress = ((xp - prevXP) / (nextXP - prevXP)) * 100;
-
-    document.getElementById("level-text").textContent = `Nivel ${level}`;
-    document.getElementById("level-progress").style.width = progress + "%";
+    const el = document.getElementById("level-text");
+    if (el) {
+        el.textContent = `Nivel ${level}`;
+    }
 }
 
 /* -----------------------------------------
