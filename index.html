@@ -1,32 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Juego de Población</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Poblaciones</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
+    <!-- Pantalla de inicio -->
+    <section id="start-screen" class="screen active">
+        <h1>Juego de Poblaciones</h1>
+        <input id="playerNameInput" type="text" placeholder="Tu nombre">
+        <button onclick="startGame()">Jugar</button>
+        <button onclick="showRanking()">Ranking Global</button>
+    </section>
 
-  <h1>Juego de Población</h1>
-  <p class="subtitle">Acierta la población con un margen del 5%</p>
+    <!-- Pantalla de juego -->
+    <section id="game-screen" class="screen">
+        <div class="top-bar">
+            <div id="lives">❤️❤️❤️</div>
+            <div id="xp">XP: 0</div>
+        </div>
 
-  <h2 id="country-name"></h2>
+        <div id="level-box">
+            <span id="level-text">Nivel 1</span>
+            <div id="level-bar">
+                <div id="level-progress"></div>
+            </div>
+        </div>
 
-  <input id="answer" type="number" step="0.1" placeholder="Población en millones">
+        <h2 id="country-name">País</h2>
+        <input id="populationInput" type="number" placeholder="Introduce la población">
+        <button onclick="submitAnswer()">Enviar</button>
 
-  <button id="check">Comprobar</button>
-  <button id="new">Nuevo país</button>
+        <p id="round-result"></p>
+    </section>
 
-  <div id="result"></div>
+    <!-- Pantalla de Game Over -->
+    <section id="gameover-screen" class="screen">
+        <h1>Game Over</h1>
+        <p id="final-xp"></p>
+        <p id="final-level"></p>
+        <button onclick="restartGame()">Reiniciar partida</button>
+        <button onclick="goToMenu()">Volver al menú</button>
+    </section>
 
-  <div class="xp-box">
-    XP Total: <span id="xp-total">0</span>
-  </div>
+    <!-- Pantalla de Ranking -->
+    <section id="ranking-screen" class="screen">
+        <h1>Ranking Global</h1>
+        <table id="ranking-table">
+            <thead>
+                <tr>
+                    <th>Jugador</th>
+                    <th>Nivel</th>
+                    <th>XP</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button onclick="goToMenu()">Volver</button>
+    </section>
 
-</div>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
