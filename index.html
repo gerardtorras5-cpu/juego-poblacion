@@ -17,7 +17,7 @@
 
         <button onclick="login()">Continuar</button>
         <button onclick="showRanking()">Ranking Global</button>
-        <button onclick="logout()" id="logoutBtn" style="display:none;">Cerrar sesión</button>
+        <button id="logoutBtn" onclick="logout()" style="display:none;">Cerrar sesión</button>
     </section>
 
     <!-- Pantalla de juego -->
@@ -25,20 +25,19 @@
         <div class="top-bar">
             <div id="lives">❤️❤️❤️</div>
             <div id="xp">XP: 0</div>
+            <div id="level-text">Nivel 1</div>
         </div>
 
-        <div id="level-box">
-            <span id="level-text">Nivel 1</span>
-            <div id="level-bar">
-                <div id="level-progress"></div>
-            </div>
-        </div>
+        <button id="menu-btn" onclick="goToMenu()" class="menu-btn">Menú</button>
 
         <h2 id="country-name">País</h2>
-        <input id="populationInput" type="number" placeholder="Introduce la población">
+        <input id="populationInput" type="number" placeholder="Población en millones">
         <button onclick="submitAnswer()">Enviar</button>
 
         <p id="round-result"></p>
+
+        <!-- Notificación de nivel -->
+        <div id="level-up-notification"></div>
     </section>
 
     <!-- Pantalla de Game Over -->
@@ -70,7 +69,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
-    <!-- CryptoJS para cifrar contraseñas -->
+    <!-- CryptoJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 
     <script src="script.js"></script>

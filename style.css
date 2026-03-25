@@ -50,24 +50,28 @@ input {
     margin-bottom: 20px;
 }
 
-#level-box {
-    width: 80%;
-    margin: 0 auto 20px auto;
+.menu-btn {
+    background: #ff9800;
+    margin-bottom: 20px;
 }
 
-#level-bar {
-    width: 100%;
-    height: 20px;
-    background: #d0d7e6;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-#level-progress {
-    height: 100%;
-    width: 0%;
+#level-up-notification {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: #2a5bd7;
-    transition: width 0.4s ease;
+    color: white;
+    padding: 20px 40px;
+    font-size: 32px;
+    border-radius: 10px;
+    display: none;
+    animation: fade 1s ease-out;
+}
+
+@keyframes fade {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
 }
 
 table {

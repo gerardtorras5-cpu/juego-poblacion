@@ -1,3 +1,4 @@
+
 /* -----------------------------------------
    LISTA DE PAÍSES (EDITABLE)
 ----------------------------------------- */
@@ -72,7 +73,6 @@ function login() {
 
     db.ref("players/" + name).once("value", snap => {
         if (!snap.exists()) {
-            // REGISTRO
             db.ref("players/" + name).set({
                 password: hashed,
                 xp: 0,
@@ -86,7 +86,6 @@ function login() {
             document.getElementById("logoutBtn").style.display = "block";
             startGame();
         } else {
-            // LOGIN
             const data = snap.val();
 
             if (data.password !== hashed) {
@@ -146,13 +145,11 @@ function nextCountry() {
 function calculateXP(real, answer) {
     const error = Math.abs(real - answer) / real;
 
-    // Si el error es mayor al 5% → pierdes vida
     if (error > 0.05) {
         lives--;
         return 100;
     }
 
-    // XP proporcional entre 100 y 1000
     const xpGain = 100 + (900 * (1 - (error / 0.05)));
     return Math.round(xpGain);
 }
@@ -166,7 +163,21 @@ function updateLivesDisplay() {
 }
 
 /* -----------------------------------------
-   ENVIAR RESPUESTA (PORCENTAJE + XP + RETRASO)
+   NOTIFICACIÓN DE SUBIDA DE NIVEL
+----------------------------------------- */
+
+function showLevelUp(level) {
+    const box = document.getElementById("level-up-notification");
+    box.textContent = `¡Nivel ${level}!`;
+    box.style.display = "block";
+
+    setTimeout(() => {
+        box.style.display = "none";
+    }, 1000);
+}
+
+/* -----------------------------------------
+   ENVIAR RESPUESTA
 ----------------------------------------- */
 
 function submitAnswer() {
@@ -177,17 +188,13 @@ function submitAnswer() {
         return;
     }
 
-    // Convertir millones a unidades
     answer = answer * 1_000_000;
 
-    // Calcular error
     const error = Math.abs(currentCountry.population - answer) / currentCountry.population;
     const errorPercent = (error * 100).toFixed(2);
 
-    // Nivel antes de sumar XP
     const oldLevel = getLevel();
 
-    // Calcular XP
     const gained = calculateXP(currentCountry.population, answer);
     xp += gained;
 
@@ -195,25 +202,20 @@ function submitAnswer() {
     updateXPDisplay();
     updateLivesDisplay();
 
-    // Comprobar si ha subido de nivel
     const newLevel = getLevel();
-    let levelMsg = "";
     if (newLevel > oldLevel) {
-        levelMsg = ` ¡Has subido a nivel ${newLevel}!`;
+        showLevelUp(newLevel);
     }
     updateLevelText();
 
-    // Mostrar resultado
     document.getElementById("round-result").textContent =
-        `Has fallado un ${errorPercent}% y has ganado ${gained} XP.${levelMsg}`;
+        `Has fallado un ${errorPercent}% y has ganado ${gained} XP`;
 
-    // Si te quedas sin vidas → Game Over tras un pequeño retraso
     if (lives <= 0) {
         setTimeout(() => gameOver(), 1500);
         return;
     }
 
-    // Esperar 1.5 segundos antes de cambiar de país
     setTimeout(() => {
         nextCountry();
     }, 1500);
@@ -224,7 +226,7 @@ function submitAnswer() {
 ----------------------------------------- */
 
 function gameOver() {
-    xp -= 200;
+    xp -= 500;
     if (xp < 0) xp = 0;
 
     saveXP();
@@ -256,7 +258,7 @@ function goToMenu() {
 }
 
 /* -----------------------------------------
-   XP + NIVELES (SIN BARRA)
+   XP + NIVELES
 ----------------------------------------- */
 
 function getLevel() {
@@ -276,11 +278,7 @@ function updateXPDisplay() {
 }
 
 function updateLevelText() {
-    const level = getLevel();
-    const el = document.getElementById("level-text");
-    if (el) {
-        el.textContent = `Nivel ${level}`;
-    }
+    document.getElementById("level-text").textContent = `Nivel ${getLevel()}`;
 }
 
 /* -----------------------------------------
