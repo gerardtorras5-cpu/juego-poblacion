@@ -166,11 +166,11 @@ function updateLivesDisplay() {
 }
 
 /* -----------------------------------------
-   ENVIAR RESPUESTA (CORREGIDO)
+   ENVIAR RESPUESTA (CORREGIDO + MILLONES)
 ----------------------------------------- */
 
 function submitAnswer() {
-    const answer = Number(document.getElementById("populationInput").value);
+    let answer = Number(document.getElementById("populationInput").value);
 
     // Validación correcta del input
     if (isNaN(answer) || answer <= 0) {
@@ -178,12 +178,13 @@ function submitAnswer() {
         return;
     }
 
+    // Convertir millones a unidades
+    answer = answer * 1_000_000;
+
     const gained = calculateXP(currentCountry.population, answer);
     xp += gained;
 
-    // Guardar XP inmediatamente
     saveLocal();
-
     updateXPDisplay();
     updateLevelBar();
     updateLivesDisplay();
